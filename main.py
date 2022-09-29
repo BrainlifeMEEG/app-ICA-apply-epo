@@ -12,7 +12,7 @@ data_file = config['fif']
 raw = mne.io.read_raw_fif(data_file, verbose=False)
 raw.load_data()
 
-fname = config['fifi']
+fname = config['ica']
 ica=mne.preprocessing.read_ica(fname, verbose=None)
 
 ica.apply(raw)
