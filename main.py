@@ -52,4 +52,4 @@ reconst_raw.plot(order=artifact_picks, n_channels=len(artifact_picks),
                  show_scrollbars=False)
 plt.savefig(os.path.join('out_figs','s2.png'))
 
-reconst_raw.save(os.path.join('out_dir','meg.fif'))
+reconst_raw.save(os.path.join('out_dir','meg.fif'),overwrite=True)
