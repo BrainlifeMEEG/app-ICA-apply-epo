@@ -45,7 +45,7 @@ ica.apply(reconst_raw)
 # artifact_picks = mne.pick_channels_regexp(raw.ch_names, regexp=regexp)
 # plt.figure(3)
 # raw.plot(order=artifact_picks, n_channels=len(artifact_picks),
-         show_scrollbars=False)
+#         show_scrollbars=False)
 # plt.savefig(os.path.join('out_figs','s1.png'))
 # plt.figure(4)
 # reconst_raw.plot(order=artifact_picks, n_channels=len(artifact_picks),
