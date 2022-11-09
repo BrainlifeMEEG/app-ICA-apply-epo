@@ -19,13 +19,13 @@ cat << EOF > product.json
       
        {
          "type": "image/png",
-	       "name": "raw",
-         "base64": "$(base64 -w 0 out_figs/s1.png)"
+	       "name": "overlay heatbeats",
+         "base64": "$(base64 -w 0 out_figs/plot_overlay_hb.png)"
        },
        {
          "type": "image/png",
-	       "name": "filtered raw",
-         "base64": "$(base64 -w 0 out_figs/s2.png)"
+	       "name": "overlay blinks",
+         "base64": "$(base64 -w 0 out_figs/plot_overlay_blinks.png)"
        }
 ]
 }
