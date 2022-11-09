@@ -23,6 +23,15 @@ ica=mne.preprocessing.read_ica(fname, verbose=None)
 
 ica.apply(raw)
 
+
+
+# heartbeats
 plt.figure(1)
 ica.plot_overlay(raw, exclude=[3], picks='mag')
-plt.savefig(os.path.join('out_figs','plot_overlay.png'))
+plt.savefig(os.path.join('out_figs','plot_overlay_hb.png'))
+
+
+# blinks
+plt.figure(2)
+ica.plot_overlay(raw, exclude=[1], picks='eeg')
+plt.savefig(os.path.join('out_figs','plot_overlay_blinks.png'))
