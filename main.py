@@ -40,7 +40,7 @@ plt.savefig(os.path.join('out_figs','plot_overlay_blinks.png'))
 reconst_raw = raw.copy()
 ica.apply(reconst_raw)
 
-pick some channels that clearly show heartbeats and blinks
+#pick some channels that clearly show heartbeats and blinks
 regexp = r'(MEG [12][45][123]1|EEG 00.)'
 artifact_picks = mne.pick_channels_regexp(raw.ch_names, regexp=regexp)
 plt.figure(3)
