@@ -16,16 +16,7 @@ singularity exec docker://brainlife/mne:1.0.2 python3 main.py
 cat << EOF > product.json
 {
     "brainlife": [
-       {
-         "type": "image/png",
-	       "name": "overlay plot heartbeats",
-         "base64": "$(base64 -w 0 out_figs/plot_overlay_hb.png)"
-       },
-       {
-         "type": "image/png",
-	       "name": "overlay plot blinks",
-         "base64": "$(base64 -w 0 out_figs/plot_overlay_blinks.png)"
-       },
+      
        {
          "type": "image/png",
 	       "name": "raw",
