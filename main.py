@@ -21,7 +21,7 @@ raw.load_data()
 fname = config['ica']
 ica=mne.preprocessing.read_ica(fname, verbose=None)
 
-ica.apply(raw)
+#ica.apply(raw)
 
 
 
