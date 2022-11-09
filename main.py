@@ -35,3 +35,19 @@ plt.savefig(os.path.join('out_figs','plot_overlay_hb.png'))
 plt.figure(2)
 ica.plot_overlay(raw, exclude=[1], picks='eeg')
 plt.savefig(os.path.join('out_figs','plot_overlay_blinks.png'))
+
+
+reconst_raw = raw.copy()
+ica.apply(reconst_raw)
+
+# pick some channels that clearly show heartbeats and blinks
+regexp = r'(MEG [12][45][123]1|EEG 00.)'
+artifact_picks = mne.pick_channels_regexp(raw.ch_names, regexp=regexp)
+plt.figure(3)
+raw.plot(order=artifact_picks, n_channels=len(artifact_picks),
+         show_scrollbars=False)
+plt.savefig(os.path.join('out_figs','s1.png'))
+plt.figure(4)
+reconst_raw.plot(order=artifact_picks, n_channels=len(artifact_picks),
+                 show_scrollbars=False)
+plt.savefig(os.path.join('out_figs','s2.png'))
