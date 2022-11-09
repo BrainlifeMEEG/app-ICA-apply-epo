@@ -18,8 +18,8 @@ cat << EOF > product.json
     "brainlife": [
        {
          "type": "image/png",
-	       "name": "Ica components",
-         "base64": "$(base64 -w 0 out_figs/ica.png)"
+	       "name": "overlay plot",
+         "base64": "$(base64 -w 0 out_figs/plot_overlay.png)"
        },
 ]
 }
