@@ -31,3 +31,7 @@ cat << EOF > product.json
 ]
 }
 EOF
+
+jq -s '{ brainlife: map(.brainlife[0]) }' product*.json > product.json
+
+rm -rf product1.json product2.json
