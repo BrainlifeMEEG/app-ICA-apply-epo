@@ -40,6 +40,18 @@ plt.savefig(os.path.join('out_figs','plot_overlay_blinks.png'))
 reconst_raw = raw.copy()
 ica.apply(reconst_raw)
 
+ica.exclude = [0, 3]
+indices= ica.exclude
+
+# build product.json dictionary for brainlife message
+product = {}
+product['brainlife'] = []
+product['brainlife'].append({'type': 'info', "msg": "here are the excluded nodes: "+', '.join([ str(f) for f in indices ])})
+
+# save product.json
+with open('product1.json','w') as prod_f:
+    json.dump(product,prod_f)
+
 #pick some channels that clearly show heartbeats and blinks
 #regexp = r'(MEG [12][45][123]1|EEG 00.)'
 #artifact_picks = mne.pick_channels_regexp(raw.ch_names, regexp=regexp)
