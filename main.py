@@ -1,4 +1,5 @@
-
+# this app is used to read in an ICA object, exclude identified components
+# and reconstruct the raw data before saving it.
 
 import os
 import mne
