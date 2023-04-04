@@ -4,6 +4,7 @@
 import os
 import mne
 import json
+import helper
 from mne.preprocessing import ICA
 
 #workaround for -- _tkinter.TclError: invalid command name ".!canvas"
@@ -13,45 +14,56 @@ import matplotlib.pyplot as plt
 
 
 with open('config.json') as config_json:
-    config = json.load(config_json)
+    config = helper.convert_parameters_to_None(json.load(config_json))
 
-data_file = config['fif']
-raw = mne.io.read_raw_fif(data_file, verbose=False)
-raw.load_data()
+data_file = config['mne']
+raw = mne.io.read_raw_fif(data_file, preload=True)
+raw_icacorr = raw.copy()
 
 fname = config['ica']
-ica=mne.preprocessing.read_ica(fname, verbose=None)
+ica = mne.preprocessing.read_ica(fname)
 
-#ica.apply(raw)
-
-
-
-# heartbeats
 plt.figure(1)
-ica.plot_overlay(raw, exclude=[3], picks='mag')
-plt.savefig(os.path.join('out_figs','plot_overlay_hb.png'))
+ica.plot_overlay(raw, exclude=config['exclude'])
+plt.savefig(os.path.join('out_figs','plot_overlay.png'))
+
+ica.apply(raw_icacorr, exclude = config['exclude'])
+
+report = mne.Report(title='ICA')
+report.add_ica(ica, 'Fitted ICA', inst = raw)
+report.add_figure(ica.plot_overlay(raw, exclude=config['exclude']), caption='Overlay plot showing the effect of subtracting the components', section='ICA')
+
+report.save('out_report/report_ica.html', overwrite=True)
+
+raw_icacorr.save(os.path.join('out_dir','meg.fif'),overwrite=True)
 
 
-# blinks
-plt.figure(2)
-ica.plot_overlay(raw, exclude=[1], picks='eeg')
-plt.savefig(os.path.join('out_figs','plot_overlay_blinks.png'))
+# # heartbeats
+# plt.figure(1)
+# ica.plot_overlay(raw, exclude=[3], picks='mag')
+# plt.savefig(os.path.join('out_figs','plot_overlay_hb.png'))
 
 
-reconst_raw = raw.copy()
-ica.apply(reconst_raw)
+# # blinks
+# plt.figure(2)
+# ica.plot_overlay(raw, exclude=[1], picks='eeg')
+# plt.savefig(os.path.join('out_figs','plot_overlay_blinks.png'))
 
-ica.exclude = [0, 3]
-indices= ica.exclude
 
-# build product.json dictionary for brainlife message
-product = {}
-product['brainlife'] = []
-product['brainlife'].append({'type': 'info', "msg": "here are the excluded nodes: "+', '.join([ str(f) for f in indices ])})
+# reconst_raw = raw.copy()
+# ica.apply(reconst_raw)
 
-# save product.json
-with open('product1.json','w') as prod_f:
-    json.dump(product,prod_f)
+# ica.exclude = [0, 3]
+# indices= ica.exclude
+
+# # build product.json dictionary for brainlife message
+# product = {}
+# product['brainlife'] = []
+# product['brainlife'].append({'type': 'info', "msg": "here are the excluded nodes: "+', '.join([ str(f) for f in indices ])})
+
+# # save product.json
+# with open('product1.json','w') as prod_f:
+#     json.dump(product,prod_f)
 
 #pick some channels that clearly show heartbeats and blinks
 #regexp = r'(MEG [12][45][123]1|EEG 00.)'
@@ -65,4 +77,3 @@ with open('product1.json','w') as prod_f:
 #                 show_scrollbars=False)
 #plt.savefig(os.path.join('out_figs','s2.png'))
 
-reconst_raw.save(os.path.join('out_dir','meg.fif'),overwrite=True)
