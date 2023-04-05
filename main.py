@@ -18,24 +18,22 @@ with open('config.json') as config_json:
 
 data_file = config['mne']
 raw = mne.io.read_raw_fif(data_file, preload=True)
-raw_icacorr = raw.copy()
 
 fname = config['ica']
 ica = mne.preprocessing.read_ica(fname)
+ica.exclude = config['exclude']
 
 plt.figure(1)
-ica.plot_overlay(raw, exclude=config['exclude'])
+ica.plot_overlay(raw)
 plt.savefig(os.path.join('out_figs','plot_overlay.png'))
 
-ica.apply(raw_icacorr, exclude = config['exclude'])
 
 report = mne.Report(title='ICA')
-report.add_ica(ica, 'Fitted ICA', inst = raw)
-report.add_figure(ica.plot_overlay(raw, exclude=config['exclude']), caption='Overlay plot showing the effect of subtracting the components', section='ICA')
-
+report.add_ica(ica, 'ICA', inst = raw)
 report.save('out_report/report_ica.html', overwrite=True)
 
-raw_icacorr.save(os.path.join('out_dir','meg.fif'),overwrite=True)
+ica.apply(raw)
+raw.save(os.path.join('out_dir','meg.fif'),overwrite=True)
 
 
 # # heartbeats
