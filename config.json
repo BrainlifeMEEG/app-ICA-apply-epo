@@ -2,5 +2,5 @@
 
   "epo": "/network/lustre/iss02/cenir/analyse/meeg/BRAINLIFE/datasets/dummy-epo.fif",
   "ica": "/network/lustre/iss02/cenir/analyse/meeg/BRAINLIFE/code/app-ICA-fit-epo/out_dir/ica.fif",
-  "exclude": [0, 1, 13]
+  "exclude": "0; 1, 13 14"
 }

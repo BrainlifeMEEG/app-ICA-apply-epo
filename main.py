@@ -6,6 +6,7 @@ import mne
 import json
 import helper
 from mne.preprocessing import ICA
+import re
 
 #workaround for -- _tkinter.TclError: invalid command name ".!canvas"
 import matplotlib
@@ -15,6 +16,9 @@ import matplotlib.pyplot as plt
 
 with open('config.json') as config_json:
     config = helper.convert_parameters_to_None(json.load(config_json))
+    
+# turn config['exclude'] into a list of integers, parsing the separated string to a list
+config['exclude'] = [int(x) for x in re.split("\\W+",config['exclude'])]
 
 data_file = config['epo']
 epo = mne.read_epochs(data_file, preload=True)
