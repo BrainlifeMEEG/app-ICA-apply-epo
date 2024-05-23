@@ -21,6 +21,8 @@ with open('config.json') as config_json:
 if config['exclude']:
     # turn config['exclude'] into a list of integers, parsing the separated string to a list
     config['exclude'] = [int(x) for x in re.split("\\W+",config['exclude'])]
+else:
+    config['exclude'] = []
 
 data_file = config['epo']
 epo = mne.read_epochs(data_file, preload=True)
