@@ -55,6 +55,9 @@ if config['reject_ECG']:
 
 ica.exclude = config['exclude']
 
+plt.figure(1)
+ica.plot_overlay(epo)
+plt.savefig(os.path.join('out_figs','plot_overlay.png'))
 
 report = mne.Report(title='ICA')
 report.add_ica(ica, 'ICA', inst = epo)
