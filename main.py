@@ -32,21 +32,20 @@ ica = mne.preprocessing.read_ica(fname)
 
 if config['EOG_chan']:
     eog_ch = config['EOG_chan']
-    # turn comma separated string into a list of channel names
-    eog_ch = [x.strip() for x in re.split("\\W+",eog_ch)]
+    # eog_ch = [x.strip() for x in re.split("\\W+",eog_ch)]
 else:
     eog_ch = None
     
 if config['ECG_chan']:
     ecg_ch = config['ECG_chan']
-    ecg_ch = [x.strip() for x in re.split("\\W+",ecg_ch)]
+    # ecg_ch = [x.strip() for x in re.split("\\W+",ecg_ch)]
 else:
     ecg_ch = None
 
-if len(eog_ch) > 1:
-    raise ValueError('Only one EOG channel should be specified')
-if len(ecg_ch) > 1:
-    raise ValueError('Only one ECG channel should be specified')
+# if len(eog_ch) > 1:
+#     raise ValueError('Only one EOG channel should be specified')
+# if len(ecg_ch) > 1:
+#     raise ValueError('Only one ECG channel should be specified')
     
 if config['reject_EOG']:
     eog_idx, eog_scores = ica.find_bads_eog(epo, ch_name=eog_ch, threshold=3.0, start=None, stop=None, l_freq=1, h_freq=10, reject_by_annotation=True, measure='zscore', verbose=None)
@@ -60,7 +59,7 @@ if config['reject_ECG']:
 ica.exclude = config['exclude']
 
 plt.figure(1)
-ica.plot_overlay(epo)
+ica.plot_overlay(epo.average())
 plt.savefig(os.path.join('out_figs','plot_overlay.png'))
 
 report = mne.Report(title='ICA')
