@@ -27,6 +27,32 @@ epo = mne.read_epochs(data_file, preload=True)
 
 fname = config['ica']
 ica = mne.preprocessing.read_ica(fname)
+
+if config['EOG_chan']:
+    eog_ch = config['EOG_chan']
+    # turn comma separated string into a list of numbers
+    eog_ch = [int(x) for x in re.split("\\W+",eog_ch)]
+else:
+    eog_ch = None
+    
+if config['ECG_chan']:
+    ecg_ch = config['ECG_chan']
+    ecg_ch = [int(x) for x in re.split("\\W+",ecg_ch)]
+else:
+    ecg_ch = None
+
+if len(eog_ch) > 1:
+    raise ValueError('Only one EOG channel should be specified')
+if len(ecg_ch) > 1:
+    raise ValueError('Only one ECG channel should be specified')
+    
+if config['reject_EOG']:
+    eog_idx, eog_scores = ica.find_bads_eog(epo, ch_name=eog_ch, threshold=3.0, start=None, stop=None, l_freq=1, h_freq=10, reject_by_annotation=True, measure='zscore', verbose=None)
+    config['exclude'] = list(set(config['exclude'] + eog_idx))
+if config['reject_ECG']:
+    ecg_idx, ecg_scores = ica.find_bads_ecg(epo, ch_name=ecg_ch, threshold='auto', start=None, stop=None, l_freq=8, h_freq=16, method='ctps', reject_by_annotation=True, measure='zscore', verbose=None)
+    config['exclude'] = list(set(config['exclude'] + ecg_idx))
+
 ica.exclude = config['exclude']
 
 
