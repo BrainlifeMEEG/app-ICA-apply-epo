@@ -30,14 +30,14 @@ ica = mne.preprocessing.read_ica(fname)
 
 if config['EOG_chan']:
     eog_ch = config['EOG_chan']
-    # turn comma separated string into a list of numbers
-    eog_ch = [int(x) for x in re.split("\\W+",eog_ch)]
+    # turn comma separated string into a list of channel names
+    eog_ch = [x.strip() for x in re.split("\\W+",eog_ch)]
 else:
     eog_ch = None
     
 if config['ECG_chan']:
     ecg_ch = config['ECG_chan']
-    ecg_ch = [int(x) for x in re.split("\\W+",ecg_ch)]
+    ecg_ch = [x.strip() for x in re.split("\\W+",ecg_ch)]
 else:
     ecg_ch = None
 
