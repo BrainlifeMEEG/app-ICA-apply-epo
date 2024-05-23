@@ -1,4 +1,4 @@
-# Apply ICA
+# Apply ICA (reject components)
 
 [![Abcdspec-compliant](https://img.shields.io/badge/ABCD_Spec-v1.1-green.svg)](https://github.com/brain-life/abcd-spec)
 [![Run on Brainlife.io](https://img.shields.io/badge/Brainlife-bl.app.530-blue.svg)](https://doi.org/10.25663/brainlife.app.530)
@@ -10,6 +10,10 @@ Brainlife App to discard ICA components in epoched data using `ica.apply`.
     * `ica/fif` ica object file
 2) Parameters:
     * `exclude`: Component numbers to exclude (in addition to any one specified in ica.exclude).
+    * `reject_EOG`: Boolean whether or not to automatically reject EOG components based on `EOG_chan` below.
+    * `EOG_chan`: EOG channel
+    * `reject_ECG`: Boolean whether or not to automatically reject ECG components based on `ECG_chan` below.
+    * `EOG_chan`: ECG channel
 3) Ouput files are:
     * `meg/fif` cleaned meg data file
 
