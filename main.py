@@ -64,5 +64,5 @@ report.add_ica(ica, 'ICA', inst = epo)
 report.save('out_report/report_ica.html', overwrite=True)
 
 ica.apply(epo)
-epo.save(os.path.join('out_dir','meg.fif'),overwrite=True)
+epo.save(os.path.join('out_dir','meg-epo.fif'),overwrite=True)
 
