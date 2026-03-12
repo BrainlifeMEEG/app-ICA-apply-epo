@@ -21,9 +21,12 @@ Outputs:
     - product.json: Metadata about applied ICA
 """
 
-# Copyright (c) 2020 brainlife.io
+# Copyright (c) 2026 brainlife.io
 #
 # This app applies ICA decomposition to MNE epoched data
+#
+# Authors:
+# - Maximilien Chaumon (https://github.com/dnacombo)
 
 import sys
 import os
@@ -148,7 +151,8 @@ epo.save(os.path.join('out_dir', 'meg-epo.fif'), overwrite=True)
 print('Epochs saved to out_dir/meg-epo.fif')
 
 # == CREATE PRODUCT.JSON ==
-create_product_json()
-add_image_to_product(overlay_fig_path, 'ICA Overlay')
-add_info_to_product(f'Applied ICA to {len(epo)} epochs with {len(ica.exclude)} excluded components', 'success')
+product_items = []
+add_image_to_product(product_items, overlay_fig_path, 'ICA Overlay')
+add_info_to_product(product_items, f'Applied ICA to {len(epo)} epochs with {len(ica.exclude)} excluded components', 'success')
+create_product_json(product_items)
 
