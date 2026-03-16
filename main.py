@@ -95,7 +95,9 @@ if config.get('ECG_chan') and config['ECG_chan'] != 'None':
         # Keep as string (channel name)
         pass
 
+# ...existing code...
 # == DETECT BAD COMPONENTS ==
+product_items = []
 if config.get('reject_EOG', False):
     try:
         eog_idx, eog_scores = ica.find_bads_eog(epo, ch_name=eog_ch, threshold=3.0,
@@ -104,9 +106,9 @@ if config.get('reject_EOG', False):
         if eog_idx:
             exclude_components = list(set(exclude_components + eog_idx))
             ica.exclude.extend(eog_idx)
-            add_info_to_product(f'Excluded {len(eog_idx)} EOG artifact components','success')
+            add_info_to_product(product_items, f'Excluded {len(eog_idx)} EOG artifact components', 'success')
     except Exception as e:
-        add_info_to_product(f'Could not detect EOG artifacts: {str(e)}', 'warning')
+        add_info_to_product(product_items, f'Could not detect EOG artifacts: {str(e)}', 'warning')
 
 if config.get('reject_ECG', False):
     try:
@@ -116,10 +118,11 @@ if config.get('reject_ECG', False):
         if ecg_idx:
             exclude_components = list(set(exclude_components + ecg_idx))
             ica.exclude.extend(ecg_idx)
-            add_info_to_product(f'Excluded {len(ecg_idx)} ECG artifact components', 'success')
+            add_info_to_product(product_items, f'Excluded {len(ecg_idx)} ECG artifact components', 'success')
     except Exception as e:
-        add_info_to_product(f'Could not detect ECG artifacts: {str(e)}', 'warning')
+        add_info_to_product(product_items, f'Could not detect ECG artifacts: {str(e)}', 'warning')
 
+# ...existing code...
 # Update to unique exclude list
 ica.exclude = list(set(ica.exclude))
 
@@ -151,7 +154,6 @@ epo.save(os.path.join('out_dir', 'meg-epo.fif'), overwrite=True)
 print('Epochs saved to out_dir/meg-epo.fif')
 
 # == CREATE PRODUCT.JSON ==
-product_items = []
 add_image_to_product(product_items, overlay_fig_path, 'ICA Overlay')
 add_info_to_product(product_items, f'Applied ICA to {len(epo)} epochs with {len(ica.exclude)} excluded components', 'success')
 create_product_json(product_items)
