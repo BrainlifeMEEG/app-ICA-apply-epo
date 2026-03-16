@@ -95,7 +95,6 @@ if config.get('ECG_chan') and config['ECG_chan'] != 'None':
         # Keep as string (channel name)
         pass
 
-# ...existing code...
 # == DETECT BAD COMPONENTS ==
 product_items = []
 if config.get('reject_EOG', False):
@@ -122,7 +121,6 @@ if config.get('reject_ECG', False):
     except Exception as e:
         add_info_to_product(product_items, f'Could not detect ECG artifacts: {str(e)}', 'warning')
 
-# ...existing code...
 # Update to unique exclude list
 ica.exclude = list(set(ica.exclude))
 
