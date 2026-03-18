@@ -99,6 +99,7 @@ if config.get('ECG_chan') and config['ECG_chan'] != 'None':
 product_items = []
 if config.get('reject_EOG', False):
     try:
+        eog_epochs = mne.preprocessing.create_eog_epochs(epo, ch_name=eog_ch)
         eog_idx, eog_scores = ica.find_bads_eog(epo, ch_name=eog_ch, threshold=3.0,
                                                 start=None, stop=None, l_freq=1, h_freq=10,
                                                 reject_by_annotation=True, measure='zscore', verbose=None)
@@ -111,6 +112,7 @@ if config.get('reject_EOG', False):
 
 if config.get('reject_ECG', False):
     try:
+        ecg_epochs = mne.preprocessing.create_ecg_epochs(epo, ch_name=ecg_ch)
         ecg_idx, ecg_scores = ica.find_bads_ecg(epo, ch_name=ecg_ch, threshold='auto',
                                                 start=None, stop=None, l_freq=8, h_freq=16,
                                                 method='ctps', reject_by_annotation=True, measure='zscore', verbose=None)
@@ -133,7 +135,12 @@ plt.close()
 
 # == CREATE REPORT ==
 report = mne.Report(title='ICA Application Report (Epochs)')
-report.add_ica(ica, 'ICA Components', inst=epo)
+report.add_ica(ica, 'ICA Components', inst=epo,
+               ecg_evoked=ecg_epochs.average() if 'ecg_epochs' in locals() else None, 
+               ecg_scores=ecg_scores if 'ecg_scores' in locals() else None,
+               eog_evoked=eog_epochs.average() if 'eog_epochs' in locals() else None,
+               eog_scores=eog_scores if 'eog_scores' in locals() else None,
+               n_jobs=10)
 
 # Add overlay information
 report_text = f'<p><b>Total Components:</b> {ica.n_components}</p>'
