@@ -127,11 +127,15 @@ if config.get('reject_ECG', False):
 ica.exclude = list(set(ica.exclude))
 
 # == CREATE OVERLAY VISUALIZATION ==
-plt.figure(figsize=(12, 6))
-ica.plot_overlay(epo.average(), show=False)
+overlay_fig = ica.plot_overlay(epo.average(), show=False)
 overlay_fig_path = os.path.join('out_figs', 'plot_overlay.png')
-plt.savefig(overlay_fig_path, dpi=150)
-plt.close()
+overlay_base64 = save_figure_with_base64(
+    overlay_fig,
+    overlay_fig_path,
+    dpi_file=150,
+    dpi_base64=80,
+)
+plt.close(overlay_fig)
 
 # == CREATE REPORT ==
 report = mne.Report(title='ICA Application Report (Epochs)')
@@ -159,7 +163,7 @@ epo.save(os.path.join('out_dir', 'meg-epo.fif'), overwrite=True)
 print('Epochs saved to out_dir/meg-epo.fif')
 
 # == CREATE PRODUCT.JSON ==
-add_image_to_product(product_items, overlay_fig_path, 'ICA Overlay')
+add_image_to_product(product_items, 'ICA Overlay', base64_data=overlay_base64)
 add_info_to_product(product_items, f'Applied ICA to {len(epo)} epochs with {len(ica.exclude)} excluded components', 'success')
 create_product_json(product_items)
 
