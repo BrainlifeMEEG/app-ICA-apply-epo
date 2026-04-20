@@ -36,7 +36,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'brainlife_utils'))
 import re
 import mne
 import matplotlib.pyplot as plt
-
+import traceback
+import inspect
 # Import shared utilities
 from brainlife_utils import (
     load_config,
