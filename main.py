@@ -108,7 +108,8 @@ if config.get('reject_EOG', False):
             ica.exclude.extend(eog_idx)
             add_info_to_product(product_items, f'Excluded {len(eog_idx)} EOG artifact components', 'success')
     except Exception as e:
-        add_info_to_product(product_items, f'Could not detect EOG artifacts: {str(e)}', 'warning')
+            traceback.print_exc()  # full traceback with line numbers
+
 
 if config.get('reject_ECG', False):
     try:
