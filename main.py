@@ -101,8 +101,7 @@ if config.get('reject_EOG', False):
     try:
         eog_epochs = mne.preprocessing.create_eog_epochs(epo, ch_name=eog_ch)
         eog_idx, eog_scores = ica.find_bads_eog(epo, ch_name=eog_ch, threshold=3.0,
-                                                start=None, stop=None, l_freq=1, h_freq=10,
-                                                reject_by_annotation=True, measure='zscore', verbose=None)
+                                                start=None, stop=None, l_freq=1, h_freq=10, measure='zscore', verbose=None)
         if eog_idx:
             exclude_components = list(set(exclude_components + eog_idx))
             ica.exclude.extend(eog_idx)
@@ -115,7 +114,7 @@ if config.get('reject_ECG', False):
         ecg_epochs = mne.preprocessing.create_ecg_epochs(epo, ch_name=ecg_ch)
         ecg_idx, ecg_scores = ica.find_bads_ecg(epo, ch_name=ecg_ch, threshold='auto',
                                                 start=None, stop=None, l_freq=8, h_freq=16,
-                                                method='ctps', reject_by_annotation=True, measure='zscore', verbose=None)
+                                                method='ctps', measure='zscore', verbose=None)
         if ecg_idx:
             exclude_components = list(set(exclude_components + ecg_idx))
             ica.exclude.extend(ecg_idx)
