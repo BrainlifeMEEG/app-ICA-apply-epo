@@ -100,31 +100,39 @@ if config.get('ECG_chan') and config['ECG_chan'] != 'None':
 product_items = []
 if config.get('reject_EOG', False):
     try:
-        eog_epochs = mne.preprocessing.create_eog_epochs(epo, ch_name=eog_ch)
-        eog_idx, eog_scores = ica.find_bads_eog(epo, ch_name=eog_ch, threshold=3.0,
-                                                start=None, stop=None, l_freq=1, h_freq=10, reject_by_annotation=False,  # Epochs don't support this
-                                                measure='zscore', verbose=None)
+        eog_idx, eog_scores = ica.find_bads_eog(
+            epo, ch_name=eog_ch, threshold=3.0,
+            start=None, stop=None, l_freq=1, h_freq=10,
+            reject_by_annotation=False,
+            measure='zscore', verbose=None,
+        )
         if eog_idx:
             exclude_components = list(set(exclude_components + eog_idx))
             ica.exclude.extend(eog_idx)
-            add_info_to_product(product_items, f'Excluded {len(eog_idx)} EOG artifact components', 'success')
+            add_info_to_product(product_items,
+                f'Excluded {len(eog_idx)} EOG artifact components: {eog_idx}', 'success')
     except Exception as e:
-            traceback.print_exc()  # full traceback with line numbers
+        add_info_to_product(product_items,
+            f'Could not detect EOG artifacts: {str(e)}', 'warning')
+        traceback.print_exc()
 
 
 if config.get('reject_ECG', False):
     try:
-        ecg_epochs = mne.preprocessing.create_ecg_epochs(epo, ch_name=ecg_ch)
-        ecg_idx, ecg_scores = ica.find_bads_ecg(epo, ch_name=ecg_ch, threshold='auto',
-                                                start=None, stop=None, l_freq=8, h_freq=16,
-                                                method='ctps',reject_by_annotation=False,  # Epochs don't support this
-                                                measure='zscore', verbose=None)
+        ecg_idx, ecg_scores = ica.find_bads_ecg(
+            epo, ch_name=ecg_ch, threshold='auto',
+            start=None, stop=None, l_freq=8, h_freq=16,
+            method='ctps', reject_by_annotation=False,
+            measure='zscore', verbose=None,
+        )
         if ecg_idx:
             exclude_components = list(set(exclude_components + ecg_idx))
             ica.exclude.extend(ecg_idx)
-            add_info_to_product(product_items, f'Excluded {len(ecg_idx)} ECG artifact components', 'success')
+            add_info_to_product(product_items,
+                f'Excluded {len(ecg_idx)} ECG artifact components: {ecg_idx}', 'success')
     except Exception as e:
-        add_info_to_product(product_items, f'Could not detect ECG artifacts: {str(e)}', 'warning')
+        add_info_to_product(product_items,
+            f'Could not detect ECG artifacts: {str(e)}', 'warning')
 
 # Update to unique exclude list
 ica.exclude = list(set(ica.exclude))
@@ -142,18 +150,33 @@ plt.close(overlay_fig)
 
 # == CREATE REPORT ==
 report = mne.Report(title='ICA Application Report (Epochs)')
-report.add_ica(ica, 'ICA Components', inst=epo,
-               ecg_evoked=ecg_epochs.average() if 'ecg_epochs' in locals() else None, 
-               ecg_scores=ecg_scores if 'ecg_scores' in locals() else None,
-               eog_evoked=eog_epochs.average() if 'eog_epochs' in locals() else None,
-               eog_scores=eog_scores if 'eog_scores' in locals() else None,
-               n_jobs=10)
+report.add_ica(
+    ica, 'ICA Components', inst=epo,
+    ecg_scores=ecg_scores if 'ecg_scores' in locals() else None,
+    eog_scores=eog_scores if 'eog_scores' in locals() else None,
+    n_jobs=10,
+)
+
+# Add EOG scores bar plot
+if 'eog_scores' in locals():
+    fig = ica.plot_scores(eog_scores, exclude=eog_idx if 'eog_idx' in locals() else None,
+                          title='EOG component scores', show=False)
+    report.add_figure(fig, title='EOG scores', section='EOG')
+    plt.close(fig)
+
+# Add ECG scores bar plot
+if 'ecg_scores' in locals():
+    fig = ica.plot_scores(ecg_scores, exclude=ecg_idx if 'ecg_idx' in locals() else None,
+                          title='ECG component scores', show=False)
+    report.add_figure(fig, title='ECG scores', section='ECG')
+    plt.close(fig)
 
 # Add overlay information
 report_text = f'<p><b>Total Components:</b> {ica.n_components}</p>'
 report_text += f'<p><b>Excluded Components:</b> {len(ica.exclude)}</p>'
 if ica.exclude:
     report_text += f'<p><b>Excluded Indices:</b> {sorted(ica.exclude)}</p>'
+report.add_html(report_text, title='Summary')
 
 report.save(os.path.join('out_report', 'report_ica.html'), overwrite=True)
 
