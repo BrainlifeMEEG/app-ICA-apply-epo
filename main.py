@@ -123,6 +123,14 @@ if config.get('reject_ECG', False):
     except Exception as e:
         add_info_to_product(product_items, f'Could not detect ECG artifacts: {str(e)}', 'warning')
 
+# Read component indices from rejects input events.tsv (special hack)
+# events.tsv contains a single comma-separated line of component indices to exclude
+events_tsv = config.get('events', '')
+if events_tsv and events_tsv not in ('', 'None') and os.path.exists(events_tsv):
+    override_idx = [int(x.strip()) for x in open(events_tsv).read().strip().split(',') if x.strip()]
+    ica.exclude = list(set(ica.exclude) | set(override_idx))
+    add_info_to_product(product_items, f'Added {len(override_idx)} components from rejects input: {override_idx}', 'info')
+
 # Update to unique exclude list
 ica.exclude = list(set(ica.exclude))
 
