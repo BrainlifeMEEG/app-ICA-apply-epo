@@ -135,7 +135,10 @@ if events_tsv and events_tsv not in ('', 'None') and os.path.exists(events_tsv):
 ica.exclude = list(set(ica.exclude))
 
 # == CREATE OVERLAY VISUALIZATION ==
-overlay_fig = ica.plot_overlay(epo.average(), show=False)
+
+_avg = epo.average().apply_baseline((None, 0))
+overlay_fig = ica.plot_overlay(_avg, show=False)
+
 overlay_fig_path = os.path.join('out_figs', 'plot_overlay.png')
 overlay_base64 = save_figure_with_base64(
     overlay_fig,
