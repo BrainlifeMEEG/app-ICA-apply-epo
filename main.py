@@ -154,7 +154,7 @@ report_text += f'<p><b>Excluded Components:</b> {len(ica.exclude)}</p>'
 if ica.exclude:
     report_text += f'<p><b>Excluded Indices:</b> {sorted(ica.exclude)}</p>'
 
-report.save(os.path.join('out_report', 'report.html'), overwrite=True)
+report.save(os.path.join('out_report', 'report.html'), overwrite=True, verbose=False)
 
 # == APPLY ICA ==
 ica.apply(epo)
