@@ -161,7 +161,7 @@ ica.apply(epo)
 print(f'Applied ICA to {len(epo)} epochs')
 
 # == SAVE PROCESSED EPOCHS ==
-epo.save(os.path.join('out_dir', 'epo.fif'), overwrite=True)
+epo.save(os.path.join('out_dir', 'meg-epo.fif'), overwrite=True)
 print('Epochs saved to out_dir/epo.fif')
 
 # == CREATE PRODUCT.JSON ==
